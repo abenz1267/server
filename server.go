@@ -49,7 +49,9 @@ func StartProd(h http.Handler, hosts ...string) {
 		Handler: h,
 	}
 
-	go log.Fatal(http.ListenAndServe(":http", certManager.HTTPHandler(nil)))
+	go func() {
+		log.Fatal(http.ListenAndServe(":http", certManager.HTTPHandler(nil)))
+	}()
 
 	log.Println("Running production server...")
 
