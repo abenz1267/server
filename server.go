@@ -31,7 +31,7 @@ func StartDev(h http.Handler, addr, certFile, keyFile string) {
 }
 
 // StartProd will start a production server with automated certificates via LetsEncrypt.
-func StartProd(h http.Handler, addr string, hosts ...string) {
+func StartProd(h http.Handler, hosts ...string) {
 	certManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist(hosts...),
@@ -39,7 +39,7 @@ func StartProd(h http.Handler, addr string, hosts ...string) {
 	}
 
 	srv := &http.Server{
-		Addr:         addr,
+		Addr:         ":https",
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
@@ -49,7 +49,7 @@ func StartProd(h http.Handler, addr string, hosts ...string) {
 		Handler: h,
 	}
 
-	go log.Fatal(http.ListenAndServe(":80", certManager.HTTPHandler(nil)))
+	go log.Fatal(http.ListenAndServe(":http", certManager.HTTPHandler(nil)))
 
 	log.Println("Running production server...")
 
